@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from fastapi import APIRouter, Request, Response
 
 router = APIRouter()
@@ -37,4 +36,4 @@ async def custom_response():
     )
 
     return response
->>>>>>> b0485459b757166266871078db0eb2f3d3adf028
+
