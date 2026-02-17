@@ -1,9 +1,5 @@
-from fastapi import FastAPI, HTTPException, status 
 from pydantic import BaseModel, EmailStr, Field 
 from typing import Optional 
-from datetime import datetime
-
-app = FastAPI()
 
 class UserCreate(BaseModel):
     email:str
@@ -35,4 +31,3 @@ class UserResponse(BaseModel):
     bio : Optional[str]
     created_at : str
     updated_at : str
-
