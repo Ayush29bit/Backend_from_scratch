@@ -17,7 +17,7 @@ def get_all_users(skip : int = 0, limit : int = 10, role : Optional[str] = None)
         users = [user for user in users if user["role"] == role]
     return users[skip: skip + limit]
 
-@app.get("users/{user_id}",
+@app.get("/users/{user_id}",
          response_model=UserResponse,
          status_code=status.HTTP_200_OK)
 def get_user(user_id:int)
@@ -25,7 +25,7 @@ def get_user(user_id:int)
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return users_db[user_id]
 
-@app.get("users/search",
+@app.get("/users/search",
          response_model=list[UserResponse],
          status_code=status.HTTP_200_OK)
 def search_users(query:str)
