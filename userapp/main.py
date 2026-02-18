@@ -35,3 +35,37 @@ def search_users(query:str)
             result.append(user)
             return result
     
+@app.post("/users", response_model = UserResponse, status_code=status.HTTP_201_CREATED)
+def create_user(user_data:UserCreate):
+
+    global next_id
+    existing_usernames = [u["username"] for u in users_db.values()]
+    if user_data.username in existing_usernames:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already taken"
+        )
+
+    existing_emails = [u["email"] for u in users_db.values()]
+    if user_data.email in existing_emails:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
+    
+    now = datetime.utcnow().isoformat()
+    new_user = {
+        "id": next_id,
+        "username": user_data.username,
+        "email": user_data.email,
+        "age": user_data.age,
+        "role": user_data.role,
+        "bio": user_data.bio,
+        "created_at": now,
+        "updated_at": now
+    }
+    
+    users_db[next_id] = new_user
+    next_id += 1
+    
+    return new_user
