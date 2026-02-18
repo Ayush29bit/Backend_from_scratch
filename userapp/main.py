@@ -69,3 +69,40 @@ def create_user(user_data:UserCreate):
     next_id += 1
     
     return new_user
+
+@app.put("/users/{user_id}",
+         response_model=UserResponse,
+         status_code=status.HTTP_200_OK)    
+def replace_user(user_id : int, user_data:UserReplace):
+    if user_id not in users_db:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    
+    existing_usernames = [u["username"] for u in users_db.values() if u["id"] != user_id]
+    if user_data.username in existing_usernames:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already taken"
+        )
+
+    existing_emails = [u["email"] for u in users_db.values() if u["id"] != user_id]
+    if user_data.email in existing_emails:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
+    
+    now = datetime.utcnow().isoformat()
+    updated_user = {
+        "id": user_id,
+        "username": user_data.username,
+        "email": user_data.email,
+        "age": user_data.age,
+        "role": user_data.role,
+        "bio": user_data.bio,
+        "created_at": users_db[user_id]["created_at"],
+        "updated_at": now
+    }
+    
+    users_db[user_id] = updated_user
+    return updated_user
+
