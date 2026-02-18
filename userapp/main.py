@@ -24,3 +24,14 @@ def get_user(user_id:int)
     if user_id not in users_db:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return users_db[user_id]
+
+@app.get("users/search",
+         response_model=list[UserResponse],
+         status_code=status.HTTP_200_OK)
+def search_users(query:str)
+    result = []
+    for user in users_db.values():
+        if query.lower() in user["username"].lower() or query.lower() in user["email"].lower():
+            result.append(user)
+            return result
+    
