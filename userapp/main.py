@@ -140,5 +140,11 @@ def update_user(user_id : int, user_data:UserUpdate):
     
     users_db[user_id] = updated_user
     return updated_user
+
+@app.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user(user_id : int):
+    if user_id not in users_db:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    del users_db[user_id]
     
 
